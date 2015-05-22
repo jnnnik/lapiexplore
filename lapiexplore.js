@@ -71,6 +71,11 @@ function ApiNode(path) {
         return self.api.get(p);
       };
     })(prop);
+    this[us2cc('set_'+prop)] = (function(p){
+      return function(arg){
+        return self.api.set(p,arg);
+      };
+    })(prop);
   }
   this._addFunction = function(func) {
     this[us2cc(func)] = (function(f){
@@ -99,10 +104,8 @@ function ApiNode(path) {
   }
 }
 
-var n = getApiNode('live_set tracks');
-var thisTrack = n.getChildByName('renamed');
-log(thisTrack.getChildren()[OFFSET_DEVICES].getChildByName('explorer'));
+//var n = getApiNode('live_set');
 
 // todo: this currently breaks because of cheap parent check:
-var b = getApiNode('this_device');
-log(b.getParent());
+//var b = getApiNode('this_device');
+//log(b.getParent());
