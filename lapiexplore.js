@@ -32,10 +32,10 @@ function ApiNode(path) {
     return self.api.info;
   }
   this.getParent = function() {
-    self._initParent();
+    _initParent();
     return self.parent;
   }
-  this._initParent = function() {
+  var _initParent = function() {
     if(self.parent !== null) return;
     var splitPath = self.path.split(' ');
     if(splitPath.length === 1) {
@@ -43,13 +43,12 @@ function ApiNode(path) {
     }
     splitPath.pop();
     self.parent = getApiNode(splitPath.join(' '));
-    self._initChildren();
   }
   this.getChildren = function() {
-    self._initChildren();
+    _initChildren();
     return self.children;
   }
-  this._initChildren = function() {
+  var _initChildren = function() {
     if(self.children !== null) return;
     self.children = [];
     var apiChildren = self.api.children;
@@ -65,20 +64,20 @@ function ApiNode(path) {
       }
     }
   }
-  this._addProperty = function(prop) {
-    this[us2cc('get_'+prop)] = (function(p){
+  var _addProperty = function(prop) {
+    self[us2cc('get_'+prop)] = (function(p){
       return function(){
         return self.api.get(p);
       };
     })(prop);
-    this[us2cc('set_'+prop)] = (function(p){
+    self[us2cc('set_'+prop)] = (function(p){
       return function(arg){
         return self.api.set(p,arg);
       };
     })(prop);
   }
-  this._addFunction = function(func) {
-    this[us2cc(func)] = (function(f){
+  var _addFunction = function(func) {
+    self[us2cc(func)] = (function(f){
       return function(arg){
         return self.api.call(f,arg);
       };
@@ -97,15 +96,12 @@ function ApiNode(path) {
     var line = infoLines[i];
     var name = line.split(' ')[1];
     if(line.indexOf('property') === 0) {
-      this._addProperty(name);
+      _addProperty(name);
     } else if(line.indexOf('function') === 0) {
-      this._addFunction(name);
+      _addFunction(name);
     }
   }
 }
 
-//var n = getApiNode('live_set');
-
-// todo: this currently breaks because of cheap parent check:
-//var b = getApiNode('this_device');
-//log(b.getParent());
+var n = getApiNode('live_set');
+n.setTempo(120);
