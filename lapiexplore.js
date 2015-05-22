@@ -1,4 +1,5 @@
 var apiNodes = {};
+var OFFSET_DEVICES = 2;
   
 function getApiNode(path) {
   if(!apiNodes[path]) {
@@ -55,7 +56,7 @@ function ApiNode(path) {
     if(!isInt(apiChildren[0])) {
       for(var key in apiChildren) {
         self.children[self.children.length] =
-           getApiNode(self.path + ' ' + apiChildren[key]);
+          getApiNode(self.path + ' ' + apiChildren[key]);
       }
     } else {
       for(var i=0; i<apiChildren[0]; i++) {
@@ -78,7 +79,14 @@ function ApiNode(path) {
       };
     })(func);
   }
-  
+  this.getChildByName = function(name) {
+    var children = this.getChildren();
+    for(var i=0,j=children.length;i<j;i++) {
+      if(children[i].getName && children[i].getName() == name) {
+        return children[i];
+      }
+    }
+  }
   var infoLines = this.getInfo().split("\n");
   for(var i=0,j=infoLines.length;i<j;i++) {
     var line = infoLines[i];
@@ -91,4 +99,10 @@ function ApiNode(path) {
   }
 }
 
-var n = new getApiNode('live_set');
+var n = getApiNode('live_set tracks');
+var thisTrack = n.getChildByName('renamed');
+log(thisTrack.getChildren()[OFFSET_DEVICES].getChildByName('explorer'));
+
+// todo: this currently breaks because of cheap parent check:
+var b = getApiNode('this_device');
+log(b.getParent());
