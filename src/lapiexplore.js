@@ -31,7 +31,7 @@ function ApiNode(_path) {
   var _isVector = false;
   this.getPath = function() {
     return _api.unquotedpath;
-  }
+  };
   this.getInfo = function() {
     var infoString = 'Path: '+ (_isVector ? _path : self.getPath()) + "\n";
     if(!_isVector) {
@@ -40,14 +40,14 @@ function ApiNode(_path) {
         infoString += ' - '+_properties[i]+"\n";
       }
       infoString += "API Methods:\n";
-      for(var i=0,j=_functions.length;i<j;i++) {
+      for(i=0,j=_functions.length;i<j;i++) {
         infoString += ' - '+_functions[i]+"\n";
       }
     } else {
       infoString += 'Vector containing '+self.getCount()+" elements\n";
     }
     return infoString;
-  }
+  };
   var _addProperty = function(prop) {
     _properties[_properties.length] = prop;
     self[us2cc('get_'+prop)] = (function(p){
@@ -60,7 +60,7 @@ function ApiNode(_path) {
         return _api.set(p,arg);
       };
     })(prop);
-  }
+  };
   var _addFunction = function(func) {
     _functions[_functions.length] = func;
     self[us2cc(func)] = (function(f){
@@ -68,7 +68,7 @@ function ApiNode(_path) {
         return _api.call(f,arg);
       };
     })(func);
-  }
+  };
   var _addChildProperty = function(name, isCollection) {
     self[us2cc('get_'+name)] = (function(n){
       return function(){
@@ -87,9 +87,9 @@ function ApiNode(_path) {
           }
           return false;
         };
-      })(name)
+      })(name);
     }
-  }
+  };
   var infoLines = _api.info.split("\n");
   
   if(infoLines[1] == 'type Vector') {
@@ -104,21 +104,21 @@ function ApiNode(_path) {
         return _children;
       }
       return _children[offset];
-    }
+    };
     this.getFirst = function() {
       return _children[0];
-    }
+    };
     this.getLast = function() {
       return _children[_childCount -1];
-    }
+    };
     this.getCount = function() {
       return _childCount;
-    }
+    };
     this.each = function(callback) {
       for(var i=0;i<_childCount;i++) {
         callback(i,_children[i]);
       }
-    }
+    };
   } else {
     this.getParent = function() {
       var parentPath = self.getPath() + ' canonical_parent';
@@ -127,9 +127,9 @@ function ApiNode(_path) {
         return false;
       }
       return getApiNode(parentPath);
-    }
-    for(var i=0,j=infoLines.length;i<j;i++) {
-      var line = infoLines[i];
+    };
+    for(var l=0,j=infoLines.length;l<j;l++) {
+      var line = infoLines[l];
       var splitLine = line.split(' ');
 
       var name = splitLine[1];
