@@ -19,13 +19,25 @@ function ApiNode(_path) {
   var self = this;
   if(!_path) _path = 'live_set';
   var _api = new LiveAPI(_path);
+  var _properties = [];
+  var _functions = [];
   this.getPath = function() {
     return _api.unquotedpath;
   }
   this.getInfo = function() {
-    return _api.info;
+    var infoString = "Path: "+self.getPath() + "\n";
+    infoString += "API Properties:\n";
+    for(var i=0,j=_properties.length;i<j;i++) {
+      infoString += ' - '+_properties[i]+"\n";
+    }
+    infoString += "API Methods:\n";
+    for(var i=0,j=_functions.length;i<j;i++) {
+      infoString += ' - '+_functions[i]+"\n";
+    }
+    return infoString;
   }
   var _addProperty = function(prop) {
+    _properties[_properties.length] = prop;
     self[us2cc('get_'+prop)] = (function(p){
       return function(){
         return _api.get(p);
@@ -38,6 +50,7 @@ function ApiNode(_path) {
     })(prop);
   }
   var _addFunction = function(func) {
+    _functions[_functions.length] = func;
     self[us2cc(func)] = (function(f){
       return function(arg){
         return _api.call(f,arg);
@@ -45,7 +58,6 @@ function ApiNode(_path) {
     })(func);
   }
   var _addChildProperty = function(name, isCollection) {
-    
     self[us2cc('get_'+name)] = (function(n){
       return function(){
         return getApiNode(self.getPath() + ' ' + name);
@@ -66,8 +78,8 @@ function ApiNode(_path) {
       })(name)
     }
   }
-  var infoLines = this.getInfo().split("\n");
-
+  var infoLines = _api.info.split("\n");
+  
   if(infoLines[1] == 'type Vector') {
     var _childCount = _api.children[0];
     var _children = [];
@@ -101,13 +113,13 @@ function ApiNode(_path) {
     for(var i=0,j=infoLines.length;i<j;i++) {
       var line = infoLines[i];
       var splitLine = line.split(' ');
-      if(splitLine.length != 3) continue;
+
       var name = splitLine[1];
-      if(line.indexOf('property') === 0 && splitLine[2].indexOf('Device') === -1) {
+      if(line.indexOf('property') === 0 && splitLine[2] && splitLine[2].indexOf('Device') === -1) {
         _addProperty(name);
       } else if(line.indexOf('function') === 0) {
         _addFunction(name);
-      } else if(line.indexOf('child') === 0 || splitLine[2].indexOf('Device') === 0) {
+      } else if(line.indexOf('child') === 0 || (splitLine[2] && splitLine[2].indexOf('Device') === 0)) {
         _addChildProperty(name, (line.indexOf('children') === 0));
       }
     }
