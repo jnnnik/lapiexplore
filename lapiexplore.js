@@ -21,18 +21,23 @@ function ApiNode(_path) {
   var _api = new LiveAPI(_path);
   var _properties = [];
   var _functions = [];
+  var _isVector = false;
   this.getPath = function() {
     return _api.unquotedpath;
   }
   this.getInfo = function() {
-    var infoString = "Path: "+self.getPath() + "\n";
-    infoString += "API Properties:\n";
-    for(var i=0,j=_properties.length;i<j;i++) {
-      infoString += ' - '+_properties[i]+"\n";
-    }
-    infoString += "API Methods:\n";
-    for(var i=0,j=_functions.length;i<j;i++) {
-      infoString += ' - '+_functions[i]+"\n";
+    var infoString = 'Path: '+ (_isVector ? _path : self.getPath()) + "\n";
+    if(!_isVector) {
+      infoString += "API Properties:\n";
+      for(var i=0,j=_properties.length;i<j;i++) {
+        infoString += ' - '+_properties[i]+"\n";
+      }
+      infoString += "API Methods:\n";
+      for(var i=0,j=_functions.length;i<j;i++) {
+        infoString += ' - '+_functions[i]+"\n";
+      }
+    } else {
+      infoString += 'Vector containing '+self.getCount()+" elements\n";
     }
     return infoString;
   }
@@ -81,6 +86,7 @@ function ApiNode(_path) {
   var infoLines = _api.info.split("\n");
   
   if(infoLines[1] == 'type Vector') {
+    _isVector = true;
     var _childCount = _api.children[0];
     var _children = [];
     for(var i=0;i<_childCount;i++) {
@@ -100,6 +106,11 @@ function ApiNode(_path) {
     }
     this.getCount = function() {
       return _childCount;
+    }
+    this.each = function(callback) {
+      for(var i=0;i<_childCount;i++) {
+        callback(i,_children[i]);
+      }
     }
   } else {
     this.getParent = function() {
