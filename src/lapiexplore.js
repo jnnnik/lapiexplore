@@ -30,10 +30,10 @@ function ApiNode(_path) {
   var _functions = [];
   var _isVector = false;
   this.getPath = function() {
-    return _api.unquotedpath;
+    return _isVector ? _path : _api.unquotedpath;
   };
   this.getInfo = function() {
-    var infoString = 'Path: '+ (_isVector ? _path : self.getPath()) + "\n";
+    var infoString = 'Path: '+ self.getPath() + "\n";
     if(!_isVector) {
       infoString += "API Properties:\n";
       for(var i=0,j=_properties.length;i<j;i++) {
@@ -97,7 +97,7 @@ function ApiNode(_path) {
     var _childCount = _api.children[0];
     var _children = [];
     for(var i=0;i<_childCount;i++) {
-      _children[i] = getApiNode(_path + ' ' + i);
+      _children[i] = getApiNode(this.getPath() + ' ' + i);
     }
     this.get = function(offset) {
       if(offset === undefined) {
