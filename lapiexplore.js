@@ -1,3 +1,10 @@
+/**
+ * lapiexplore.js
+ * written by Jannik Lemberg in 2015
+ **/
+
+var Explorer = (function() {
+
 var apiNodes = {};  
 function getApiNode(path) {
   if(!apiNodes[path]) {
@@ -136,3 +143,9 @@ function ApiNode(_path) {
     }
   }
 }
+
+return ApiNode;
+
+})();
+
+/** fin */
