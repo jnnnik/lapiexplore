@@ -47,7 +47,7 @@ liveSet.jumpBy(2);
 // The above calls the "jump_by" API function, obviously.
 // If you're ever lost, simply post the output of
 explorer.getInfo();
-// Which conveniently lists all LOM property and function.
+// Which conveniently lists all LOM property and functions available.
 
 // That's about all there is for now! Have fun and do some fancy stuff like
 liveSet.getTracks().each(function(i, track) {
